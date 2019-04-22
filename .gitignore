@@ -1,0 +1,7 @@
+# elk 
+.monitoring-logstash*
+
+# gitlab
+**/gitlab-ce/config/*
+**/gitlab-ce/data/*
+**/gitlab-ce/logs/*
