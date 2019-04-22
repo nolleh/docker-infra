@@ -1,0 +1,17 @@
+if [ "$#" != "2" ]; then
+    echo "usage: register -t token"
+    exit
+elif [ "$1" == "-t" ]; then
+    TOKEN=$2
+    echo ${TOKEN}
+else
+    exit
+fi
+
+docker-compose run --rm gitlab-runner register -n \
+  --url http://gitlab/ \
+  --registration-token $TOKEN \
+  --executor docker \
+  --description "nolleh's Docker Runner" \
+  --docker-image "docker:stable" \
+  --docker-volumes /var/run/docker.sock:/var/run/docker.sock  

@@ -1,0 +1,44 @@
+version: '2.2'
+services: 
+  gitlab:
+    container_name: gitlab
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always
+    hostname: 'localhost'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://localhost'
+        # Add any other gitlab.rb configuration here, each on its own line
+    ports:
+      - '80:80'
+      - '443:443'
+      - '22:22'
+    volumes:
+    #  - '/srv/gitlab/config:/etc/gitlab'
+    #  - '/srv/gitlab/logs:/var/log/gitlab'
+    #  - '/srv/gitlab/data:/var/opt/gitlab'
+      - './gitlab-ce/config:/etc/gitlab'
+      - './gitlab-ce/logs:/var/log/gitlab'
+    #  - './data:/var/opt/gitlab'
+    networks:
+      - gitnet
+
+  # docker run -d --name gitlab-runner --restart always \
+  # -v /var/run/docker.sock:/var/run/docker.sock \
+  # -v /srv/gitlab-runner/config:/etc/gitlab-runner \
+  # gitlab/gitlab-runner:latest
+  # 
+  gitlab-runner:
+    container_name: gitlab-runner
+    image: 'gitlab/gitlab-runner:latest'
+    restart: always
+    volumes:
+     - '/var/run/docker.sock:/var/run/docker.sock'
+     - './gitlab-runner/config:/etc/gitlab-runner'
+    depends_on: 
+      - gitlab
+    networks:
+      - gitnet
+networks:
+  gitnet:
+    driver: bridge
